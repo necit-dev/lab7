@@ -10,6 +10,6 @@ public class AppController {
 
         view.getBtn().setOnAction(e -> {
             System.out.println("Кнопка нажата");
-        });;
+        });
     }
 }

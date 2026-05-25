@@ -8,11 +8,17 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-        AppModel model = new AppModel();
-        AppView view = new AppView();
+//        AppModel model = new AppModel();
+//        AppView view = new AppView();
+//
+//        new AppController(model, view);
 
-        new AppController(model, view);
-        Scene scene = new Scene(view.getRoot(), 400, 350);
+        HairdresserModel hdModel = new HairdresserModel();
+        HairdresserView hdView = new HairdresserView();
+
+        new HairdresserController(hdModel,hdView);
+
+        Scene scene = new Scene(hdView.getRoot(), 400, 350);
         stage.setTitle("Парикмахерская");
         stage.setMinWidth(350);
         stage.setMinHeight(300);

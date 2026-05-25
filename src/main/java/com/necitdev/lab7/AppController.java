@@ -8,8 +8,5 @@ public class AppController {
         this.model = model;
         this.view = view;
 
-        view.getBtn().setOnAction(e -> {
-            System.out.println("Кнопка нажата");
-        });
     }
 }

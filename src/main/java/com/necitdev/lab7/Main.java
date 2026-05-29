@@ -14,7 +14,7 @@ public class Main extends Application {
 
         for (int i = 0; i < COUNT_OF_HAIRDRESSERS; i++) {
             hdviews[i] = new HairdresserView();
-            hairdresserControllers[i] = new HairdresserController(new HairdresserModel(), hdviews[i]);
+            hairdresserControllers[i] = new HairdresserController(new HairdresserModel(i+3), hdviews[i]);
         }
 
 

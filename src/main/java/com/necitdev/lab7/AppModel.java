@@ -1,10 +1,14 @@
 package com.necitdev.lab7;
 
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 public class AppModel {
     private final int hairdressersCount;
     private int hairdressersWorking = 0;
     private int leavingClients = 0;
     private AppState state = AppState.IDLE;
+    private Queue<Integer> clientsInQueue = new ArrayDeque<>();
 
     public int getLeavingClients() {
         return leavingClients;
@@ -12,6 +16,10 @@ public class AppModel {
 
     public void leaveClient() {
         leavingClients++;
+    }
+
+    public Queue<Integer> getClientsInQueue() {
+        return clientsInQueue;
     }
 
     public AppModel(int countOfHairdressers) {

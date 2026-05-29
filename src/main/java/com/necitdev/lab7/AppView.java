@@ -18,6 +18,8 @@ public class AppView {
     private final Button workButton;
     private final Label appStatusLabel;
     private final Label hairdressersLabel;
+    private final Label clientsLeaveLabel;
+    private final Label queueCountLabel;
 
     public AppView(HairdresserView[] hairdresserView) {
         secondColumn = new VBox(20);
@@ -37,7 +39,10 @@ public class AppView {
         workButton = new Button("Пусть кто-то поработает");
         appStatusLabel = new Label("Статус приложения: IDLE");
         hairdressersLabel = new Label("Парикмахеров занято: 0");
-        mainVbox = new VBox(10, workButton, appStatusLabel, hairdressersLabel);
+        queueCountLabel = new Label("Клиентов в очереди: 0");
+        clientsLeaveLabel = new Label("Клиентов ушло: 0");
+
+        mainVbox = new VBox(10, workButton, appStatusLabel, hairdressersLabel, queueCountLabel, clientsLeaveLabel);
         mainVbox.setAlignment(Pos.CENTER);
         root.getChildren().add(mainVbox);
         root.setAlignment(Pos.CENTER);
@@ -51,8 +56,10 @@ public class AppView {
         return root;
     }
 
-    public void render(AppState state, int countOfWorking) {
-        hairdressersLabel.setText("Парикмахеров занято:" + countOfWorking);
+    public void render(AppState state, int countOfWorking, int leavingClients, int inQueueClients) {
+        hairdressersLabel.setText("Парикмахеров занято: " + countOfWorking);
+        clientsLeaveLabel.setText("Клиентов ушло: " + leavingClients);
+        queueCountLabel.setText("Клиентов в очереди: " + inQueueClients);
         switch (state){
             case IDLE -> {
                 appStatusLabel.setText("Статус приложения: IDLE");

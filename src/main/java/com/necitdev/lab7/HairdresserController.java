@@ -15,17 +15,12 @@ public class HairdresserController {
         this.hairdresserModel = hairdresserModel;
         this.hairdresserView = hairdresserView;
 
-        this.timeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
-            tick();
-        }));
-        timeline.setCycleCount(Animation.INDEFINITE);
-
-        hairdresserView.getStartWorkButton().setOnAction(e -> startProcess());
     }
 
-    private void tick() {
+
+    public void tick() {
         int current = hairdresserModel.getSecondsLeft();
-        if (current > 0) {
+        if (current > 1) {
             hairdresserModel.setSecondsLeft(--current);
         }else {
             timeline.stop();
@@ -34,11 +29,11 @@ public class HairdresserController {
         updateUI();
     }
 
-    public void startProcess() {
+    public void startProcess(int coefficient) {
         boolean isIDLEState = hairdresserModel.getState() == HairdresserState.IDLE;
         if (isIDLEState) {
             hairdresserModel.handleEvent(HairdresserEvent.WORK_START);
-            hairdresserModel.setSecondsLeft(5);
+            hairdresserModel.setSecondsLeft(hairdresserModel.getStandardWork()*coefficient);
             timeline.play();
         }
         updateUI();
@@ -59,4 +54,8 @@ public class HairdresserController {
     public Timeline getTimeline() {
         return timeline;
     }
+    public void setTimeline(Timeline timeline){
+        this.timeline = timeline;
+    }
+
 }

@@ -11,7 +11,6 @@ public class HairdresserView {
     private final VBox root;
     private final Label statusLabel;
     private final Label timerLabel;
-    private final Button startWorkButton;
 
     private final String noTime = "-- сек";
     private final String statusText = "Статус: ";
@@ -19,15 +18,13 @@ public class HairdresserView {
     public HairdresserView() {
         statusLabel = new Label(statusText + "IDLE");
         timerLabel = new Label(noTime);
-        startWorkButton = new Button("Начать стрижку");
 
 
-        root = new VBox(10,statusLabel, timerLabel, startWorkButton);
+        root = new VBox(10,statusLabel, timerLabel);
         root.setAlignment(Pos.CENTER);
         root.setPadding(new Insets(16));
 
         statusLabel.setText(statusText + "IDLE");
-        startWorkButton.setDisable(false);
     }
 
     public Pane getRoot() {
@@ -42,9 +39,7 @@ public class HairdresserView {
         return timerLabel;
     }
 
-    public Button getStartWorkButton() {
-        return startWorkButton;
-    }
+
 
     public void render(HairdresserState state, int seconds) {
         timerLabel.setText(seconds + " сек");
@@ -53,11 +48,9 @@ public class HairdresserView {
             case IDLE -> {
                 timerLabel.setText("--- сек");
                 statusLabel.setText(statusText + "IDLE");
-                startWorkButton.setDisable(false);
             }
             case WORKING -> {
                 statusLabel.setText(statusText + "WORKING");
-                startWorkButton.setDisable(true);
             }
         }
     }

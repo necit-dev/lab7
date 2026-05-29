@@ -1,5 +1,13 @@
 package com.necitdev.lab7;
 
+import javafx.animation.Animation;
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
+import javafx.util.Duration;
+
+import java.util.ArrayDeque;
+import java.util.Queue;
+
 public class AppController {
     private AppModel model;
     private AppView view;
@@ -9,26 +17,59 @@ public class AppController {
         this.model = model;
         this.view = view;
         this.hairdresserControllers = hairdresserControllers;
+        for (int i = 0; i < hairdresserControllers.length; i++) {
+            final int this_i = i;
+            hairdresserControllers[i].setTimeline(new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+                hairdresserControllers[this_i].tick();
+                // Больше единицы из-за счета 5, 4, 3, 2, 1 без 0, ноль не показывается
+                if (hairdresserControllers[this_i].getHairdresserModel().getState() == HairdresserState.IDLE) {
+                    model.handleEvent(AppEvent.CLIENT_REMOVE);
+                    if (!model.getClientsInQueue().isEmpty()){
+                        processWorkStart(model.getClientsInQueue().poll());
+                    }
+                    updateUI();
+                }
+            })));
+            hairdresserControllers[i].getTimeline().setCycleCount(Animation.INDEFINITE);
+        }
         view.getWorkButton().setOnAction(e -> workHairdresser());
 
     }
 
     private void workHairdresser() {
-        if (model.getState() == AppState.ALL_WORKING) {
-            System.out.println("Все заняты");
+        final double random = Math.random();
+        int coefficient = 1;
+        if (random < 0.333) {
+            coefficient = 2;
+        }else if (random < 0.667) {
+            coefficient = 3;
         }
+        System.out.println(random);
+        if (model.getState() == AppState.ALL_WORKING) {
+            if (model.getClientsInQueue().size() < 5) {
+                model.getClientsInQueue().add(coefficient);
+            }else {
+                System.out.println("Все заняты");
+                model.leaveClient();
+            }
+
+        }
+        processWorkStart(coefficient);
+        updateUI();
+    }
+
+    private void processWorkStart(int coefficient) {
         for (int i = 0; i < model.getHairdressersCount(); i++) {
             if (hairdresserControllers[i].getHairdresserModel().getState() == HairdresserState.IDLE){
-                hairdresserControllers[i].startProcess();
+                hairdresserControllers[i].startProcess(coefficient);
                 model.handleEvent(AppEvent.CLIENT_ADD);
                 break;
             }
         }
-        updateUI();
     }
 
     private void updateUI() {
-        view.render(model.getState(), model.getHairdressersWorking());
+        view.render(model.getState(), model.getHairdressersWorking(), model.getLeavingClients(), model.getClientsInQueue().size());
     }
 
 }

@@ -8,34 +8,25 @@ public class Main extends Application {
 
     @Override
     public void start(Stage stage) throws Exception {
-//        AppModel model = new AppModel();
-        AppView appView = new AppView();
-//
-//        new AppController(model, view);
+        final int COUNT_OF_HAIRDRESSERS = 4;
+        HairdresserController[] hairdresserControllers = new HairdresserController[COUNT_OF_HAIRDRESSERS];
+        HairdresserView[] hdviews = new HairdresserView[COUNT_OF_HAIRDRESSERS];
 
-        HairdresserModel hdModel1 = new HairdresserModel();
-        HairdresserView hdView1 = new HairdresserView();
+        for (int i = 0; i < COUNT_OF_HAIRDRESSERS; i++) {
+            hdviews[i] = new HairdresserView();
+            hairdresserControllers[i] = new HairdresserController(new HairdresserModel(), hdviews[i]);
+        }
 
-        HairdresserModel hdModel2 = new HairdresserModel();
-        HairdresserView hdView2 = new HairdresserView();
 
-        HairdresserModel hdModel3 = new HairdresserModel();
-        HairdresserView hdView3 = new HairdresserView();
+        AppModel model = new AppModel(COUNT_OF_HAIRDRESSERS);
+        AppView appView = new AppView(hdviews);
 
-        HairdresserModel hdModel4 = new HairdresserModel();
-        HairdresserView hdView4 = new HairdresserView();
 
-        new HairdresserController(hdModel1, hdView1);
-        new HairdresserController(hdModel2, hdView2);
-        new HairdresserController(hdModel3, hdView3);
-        new HairdresserController(hdModel4, hdView4);
 
-        appView.getRoot().getChildren().add(hdView1.getRoot());
-        appView.getRoot().getChildren().add(hdView2.getRoot());
-        appView.getRoot().getChildren().add(hdView3.getRoot());
-        appView.getRoot().getChildren().add(hdView4.getRoot());
 
-        Scene scene = new Scene(appView.getRoot(), 400, 350);
+        new AppController(model, appView, hairdresserControllers);
+
+        Scene scene = new Scene(appView.getRoot(), 400, 650);
         stage.setTitle("Парикмахерская");
 //        stage.setMinWidth(350);
 //        stage.setMinHeight(300);

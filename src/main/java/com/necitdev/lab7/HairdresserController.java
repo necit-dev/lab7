@@ -34,11 +34,11 @@ public class HairdresserController {
         updateUI();
     }
 
-    private void startProcess() {
+    public void startProcess() {
         boolean isIDLEState = hairdresserModel.getState() == HairdresserState.IDLE;
         if (isIDLEState) {
             hairdresserModel.handleEvent(HairdresserEvent.WORK_START);
-            hairdresserModel.setSecondsLeft(10);
+            hairdresserModel.setSecondsLeft(5);
             timeline.play();
         }
         updateUI();
@@ -46,5 +46,17 @@ public class HairdresserController {
 
     private void updateUI() {
         hairdresserView.render(hairdresserModel.getState(), hairdresserModel.getSecondsLeft());
+    }
+
+    public HairdresserModel getHairdresserModel() {
+        return hairdresserModel;
+    }
+
+    public HairdresserView getHairdresserView() {
+        return hairdresserView;
+    }
+
+    public Timeline getTimeline() {
+        return timeline;
     }
 }

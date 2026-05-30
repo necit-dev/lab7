@@ -35,7 +35,7 @@ public class AppController {
         }
         view.getWorkButton().setOnAction(e -> workHairdresser());
         view.getStartProcess().setOnAction(e -> processAppStart());
-        appTimer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+        appTimer = new Timeline(new KeyFrame(Duration.seconds(0.001), e -> {
             appTick();
         }));
         appTimer.setCycleCount(Animation.INDEFINITE);
@@ -45,11 +45,18 @@ public class AppController {
         int currentTime = model.getProcessTime();
         if (currentTime > 1) {
             model.setProcessTime(--currentTime);
-            if (currentTime% 1 == 0) workHairdresser();
+            int timer;
+            try {
+                timer = Integer.parseInt(view.getIntensityTextField().getText());
+            } catch (Exception e) {
+                timer = 2000;
+            }
+            if (currentTime% timer == 0) workHairdresser();
         }else {
             appTimer.stop();
             model.setProcessTime(0);
             view.getStartProcess().setDisable(false);
+            view.getIntensityTextField().setDisable(false);
         }
         updateUI();
     }
@@ -78,7 +85,8 @@ public class AppController {
 
     private void processAppStart() {
         view.getStartProcess().setDisable(true);
-        model.setProcessTime(60);
+        view.getIntensityTextField().setDisable(true);
+        model.setProcessTime(60000);
         appTimer.play();
         workHairdresser();
         updateUI();

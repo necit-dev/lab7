@@ -5,9 +5,13 @@ import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
+
+import java.util.function.UnaryOperator;
 
 public class AppView {
     private final VBox root;
@@ -22,6 +26,8 @@ public class AppView {
     private final Label clientsLeaveLabel;
     private final Label queueCountLabel;
     private final Label processTimeLabel;
+    private final Label intensityLabel;
+    private final TextField intensityTextField;
 
     public AppView(HairdresserView[] hairdresserView) {
         secondColumn = new VBox(20);
@@ -38,18 +44,42 @@ public class AppView {
                 secondColumn.getChildren().add(hairdresserView[i].getRoot());
             }
         }
+
         workButton = new Button("Пусть кто-то поработает");
         startProcess = new Button("Запустить процесс");
+
         appStatusLabel = new Label("Статус приложения: IDLE");
         hairdressersLabel = new Label("Парикмахеров занято: 0");
         queueCountLabel = new Label("Клиентов в очереди: 0");
         clientsLeaveLabel = new Label("Клиентов ушло: 0");
         processTimeLabel = new Label("Поток клиентов остановится через: 0");
 
-        mainVbox = new VBox(10, workButton, startProcess, appStatusLabel, processTimeLabel, hairdressersLabel, queueCountLabel, clientsLeaveLabel);
+        intensityTextField = new TextField("2000");
+        intensityTextField.setMaxWidth(55);
+        intensityLabel = new Label("Задайте интенсивность прихода клиентов в мс\n(мс = 1/1000 сек), по умолчанию = 2000");
+        intensityLabel.setAlignment(Pos.CENTER);
+
+        mainVbox = new VBox(10, workButton, startProcess, appStatusLabel, processTimeLabel,
+                hairdressersLabel, queueCountLabel, clientsLeaveLabel, intensityLabel, intensityTextField);
         mainVbox.setAlignment(Pos.CENTER);
         root.getChildren().add(mainVbox);
         root.setAlignment(Pos.CENTER);
+
+        UnaryOperator<TextFormatter.Change> filter = change -> {
+            String text = change.getControlNewText();
+            if (text.matches("\\d*")) {
+                if (text.equals("0")) return null;
+                return change;
+            }
+            return null;
+        };
+
+        TextFormatter<String> formatter = new TextFormatter<>(filter);
+        intensityTextField.setTextFormatter(formatter);
+    }
+
+    public TextField getIntensityTextField() {
+        return intensityTextField;
     }
 
     public Button getWorkButton() {
@@ -72,7 +102,7 @@ public class AppView {
         hairdressersLabel.setText("Парикмахеров занято: " + countOfWorking);
         clientsLeaveLabel.setText("Клиентов ушло: " + leavingClients);
         queueCountLabel.setText("Клиентов в очереди: " + inQueueClients);
-        processTimeLabel.setText("Поток клиентов остановится через: " + processTime);
+        processTimeLabel.setText("Поток клиентов остановится через: " + (int)Math.ceil((double)processTime/1000));
         switch (state){
             case IDLE -> {
                 appStatusLabel.setText("Статус приложения: IDLE");

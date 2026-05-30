@@ -9,6 +9,15 @@ public class AppModel {
     private int leavingClients = 0;
     private AppState state = AppState.IDLE;
     private Queue<Integer> clientsInQueue = new ArrayDeque<>();
+    private int processTime = 0;
+
+    public int getProcessTime() {
+        return processTime;
+    }
+
+    public void setProcessTime(int processTime) {
+        this.processTime = processTime;
+    }
 
     public int getLeavingClients() {
         return leavingClients;

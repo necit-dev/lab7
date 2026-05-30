@@ -12,6 +12,7 @@ public class AppController {
     private AppModel model;
     private AppView view;
     private HairdresserController[] hairdresserControllers;
+    private Timeline appTimer;
 
     public AppController(AppModel model, AppView view, HairdresserController[] hairdresserControllers) {
         this.model = model;
@@ -33,7 +34,24 @@ public class AppController {
             hairdresserControllers[i].getTimeline().setCycleCount(Animation.INDEFINITE);
         }
         view.getWorkButton().setOnAction(e -> workHairdresser());
+        view.getStartProcess().setOnAction(e -> processAppStart());
+        appTimer = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+            appTick();
+        }));
+        appTimer.setCycleCount(Animation.INDEFINITE);
+    }
 
+    private void appTick(){
+        int currentTime = model.getProcessTime();
+        if (currentTime > 1) {
+            model.setProcessTime(--currentTime);
+            if (currentTime% 1 == 0) workHairdresser();
+        }else {
+            appTimer.stop();
+            model.setProcessTime(0);
+            view.getStartProcess().setDisable(false);
+        }
+        updateUI();
     }
 
     private void workHairdresser() {
@@ -58,6 +76,14 @@ public class AppController {
         updateUI();
     }
 
+    private void processAppStart() {
+        view.getStartProcess().setDisable(true);
+        model.setProcessTime(60);
+        appTimer.play();
+        workHairdresser();
+        updateUI();
+    }
+
     private void processWorkStart(int coefficient) {
         for (int i = 0; i < model.getHairdressersCount(); i++) {
             if (hairdresserControllers[i].getHairdresserModel().getState() == HairdresserState.IDLE){
@@ -69,7 +95,7 @@ public class AppController {
     }
 
     private void updateUI() {
-        view.render(model.getState(), model.getHairdressersWorking(), model.getLeavingClients(), model.getClientsInQueue().size());
+        view.render(model.getState(), model.getHairdressersWorking(), model.getLeavingClients(), model.getClientsInQueue().size(), model.getProcessTime());
     }
 
 }
